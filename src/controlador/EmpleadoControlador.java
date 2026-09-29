@@ -2,6 +2,7 @@ package controlador;
 
 import modelo.EmpleadoAdministrativo;
 import modelo.EmpleadoBase;
+import modelo.EmpleadoComercial;
 import modelo.RepositorioEmpleados;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 public class EmpleadoControlador {
 
     // Array: lista FIJA de tipos de empleado
-    public static final String[] TIPOS_EMPLEADO = {"Operativo", "Administrativo"};
+    public static final String[] TIPOS_EMPLEADO = {"Operativo", "Administrativo", "Comercial"};
 
     private final RepositorioEmpleados repositorio;
     private final ArrayList<String> historial; // crece con cada operación
@@ -67,6 +68,14 @@ public class EmpleadoControlador {
         if (tipo.equals("Administrativo") && !esNumeroValido(bonificacion)) {
             return "La bonificación debe ser un número positivo.";
         }
+        if (tipo.equals("Comercial")) {
+            if (!esNumeroValido(bonificacion)) {
+                return "La comisión debe ser un número positivo.";
+            }
+            if (Double.parseDouble(bonificacion) > 50) {
+                return "La comisión no puede ser mayor a 50%.";
+            }
+        }
         return null;
     }
 
@@ -77,6 +86,10 @@ public class EmpleadoControlador {
         if (tipo.equals("Administrativo")) {
             double bono = Double.parseDouble(bonificacion);
             return new EmpleadoAdministrativo(cedula, nombre, salarioBase, bono);
+        }
+        if (tipo.equals("Comercial")) {
+            double comision = Double.parseDouble(bonificacion);
+            return new EmpleadoComercial(cedula, nombre, salarioBase, comision);
         }
         return new EmpleadoBase(cedula, nombre, salarioBase);
     }
